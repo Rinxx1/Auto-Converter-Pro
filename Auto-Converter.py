@@ -13,7 +13,7 @@ from functools import lru_cache
 import copy
 from datetime import datetime
 
-class ModernStyle:
+class ModernStyle: 
     """Modern styling constants and utilities"""
     # Color palette
     PRIMARY = "#3B82F6"      # Blue
