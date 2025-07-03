@@ -13,32 +13,35 @@ from functools import lru_cache
 import copy
 from datetime import datetime
 
-class ModernStyle: 
+
+class ModernStyle:
     """Modern styling constants and utilities"""
     # Color palette
-    PRIMARY = "#3B82F6"      # Blue
-    SECONDARY = "#10B981"    # Green
-    ACCENT = "#F59E0B"       # Amber
-    DANGER = "#EF4444"       # Red
-    SUCCESS = "#10B981"      # Green
-    WARNING = "#F59E0B"      # Amber
-    
+    PRIMARY = "#3B82F6"  # Blue
+    SECONDARY = "#10B981"  # Green
+    ACCENT = "#F59E0B"  # Amber
+    DANGER = "#EF4444"  # Red
+    SUCCESS = "#10B981"  # Green
+    WARNING = "#F59E0B"  # Amber
+
     # Neutral colors
-    BACKGROUND = "#F8FAFC"   # Light gray
-    SURFACE = "#FFFFFF"      # White
-    SURFACE_DARK = "#F1F5F9" # Slightly darker
-    TEXT_PRIMARY = "#1E293B" # Dark gray
-    TEXT_SECONDARY = "#64748B" # Medium gray
-    BORDER = "#E2E8F0"       # Light border
-    CARD_SHADOW = "#00000010" # Subtle shadow
-    
+    BACKGROUND = "#F8FAFC"  # Light gray
+    SURFACE = "#FFFFFF"  # White
+    SURFACE_DARK = "#F1F5F9"  # Slightly darker
+    TEXT_PRIMARY = "#1E293B"  # Dark gray
+    TEXT_SECONDARY = "#64748B"  # Medium gray
+    BORDER = "#E2E8F0"  # Light border
+    CARD_SHADOW = "#00000010"  # Subtle shadow
+
     # New appealing button colors
-    BUTTON_PRIMARY = "#60A5FA"    # Light blue - more appealing
+    BUTTON_PRIMARY = "#60A5FA"  # Light blue - more appealing
     BUTTON_PRIMARY_HOVER = "#3B82F6"  # Darker blue on hover
-    BUTTON_DISABLED = "#CBD5E1"   # Light gray for disabled state
+    BUTTON_DISABLED = "#CBD5E1"  # Light gray for disabled state
+
 
 class DocumentConverterTab:
     """Tab for document conversion with modern full-width design"""
+
     def __init__(self, parent_frame):
         self.parent_frame = parent_frame
         self.word_template_path = None
@@ -46,31 +49,31 @@ class DocumentConverterTab:
         self.additional_excel_paths = []
         self.image_folder_path = None  # Add image folder path
         self.image_width = 1.0  # Default image width in inches
-        
+
         # Cache for performance optimization
         self._placeholders_cache = None
         self._additional_data_cache = {}
         self._column_mapping_cache = None
-        
+
         self.setup_modern_fullwidth_ui()
-    
+
     def setup_modern_fullwidth_ui(self):
         # Configure parent frame
         self.parent_frame.configure(bg=ModernStyle.BACKGROUND)
-        
+
         # Main container with full width
         main_container = tk.Frame(self.parent_frame, bg=ModernStyle.BACKGROUND)
         main_container.pack(fill=tk.BOTH, expand=True, padx=0, pady=0)
-        
+
         # Header section with gradient-like effect
         header_frame = tk.Frame(main_container, bg=ModernStyle.PRIMARY, height=80)
         header_frame.pack(fill=tk.X, pady=(0, 0))
         header_frame.pack_propagate(False)
-        
+
         # Header content
         header_content = tk.Frame(header_frame, bg=ModernStyle.PRIMARY)
         header_content.pack(fill=tk.BOTH, expand=True, padx=30, pady=20)
-        
+
         title_font = font.Font(family="Segoe UI", size=22, weight="bold")
         title_label = tk.Label(
             header_content,
@@ -80,7 +83,7 @@ class DocumentConverterTab:
             fg="white"
         )
         title_label.pack(side=tk.LEFT, anchor=tk.W)
-        
+
         subtitle_font = font.Font(family="Segoe UI", size=11)
         subtitle_label = tk.Label(
             header_content,
@@ -90,50 +93,52 @@ class DocumentConverterTab:
             fg="white"
         )
         subtitle_label.pack(side=tk.RIGHT, anchor=tk.E)
-        
+
         # Content area with full width
         content_area = tk.Frame(main_container, bg=ModernStyle.BACKGROUND)
         content_area.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
-        
+
         # Two-column layout for better space utilization
         left_column = tk.Frame(content_area, bg=ModernStyle.BACKGROUND)
         left_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
-        
+
         right_column = tk.Frame(content_area, bg=ModernStyle.BACKGROUND)
         right_column.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
-        
+
         # File Upload Section (Left Column)
         upload_section = self.create_modern_section(left_column, "📁 File Upload", ModernStyle.PRIMARY)
         upload_section.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
-        
+
         # Modern upload cards
-        self.create_modern_upload_card(upload_section, "📄", "Household or Business Word Template", "Select your template document", 
-                                     lambda: self.upload_word_template(), "word_label")
-        
-        self.create_modern_upload_card(upload_section, "📊", "Household or Business Main File", "Choose your primary data source", 
-                                     lambda: self.upload_excel_file(), "excel_label")
-        
-        self.create_modern_upload_card(upload_section, "📋", "External Table Files", "Optional household or business external tbl files", 
-                                     lambda: self.upload_additional_files(), "additional_label")
-        
+        self.create_modern_upload_card(upload_section, "📄", "Household or Business Word Template",
+                                       "Select your template document",
+                                       lambda: self.upload_word_template(), "word_label")
+
+        self.create_modern_upload_card(upload_section, "📊", "Household or Business Main File",
+                                       "Choose your primary data source",
+                                       lambda: self.upload_excel_file(), "excel_label")
+
+        self.create_modern_upload_card(upload_section, "📋", "External Table Files",
+                                       "Optional household or business external tbl files",
+                                       lambda: self.upload_additional_files(), "additional_label")
+
         # Add image folder upload card
-        self.create_modern_upload_card(upload_section, "🖼️", "Image Folder (Optional)", "Folder containing images for resp_pix", 
-                                     lambda: self.upload_image_folder(), "image_label")
-        
+        self.create_modern_upload_card(upload_section, "🖼️", "Image Folder (Optional)",
+                                       "Folder containing images for resp_pix",
+                                       lambda: self.upload_image_folder(), "image_label")
+
         # Processing Section (Right Column)
         processing_section = self.create_modern_section(right_column, "🚀 Processing", ModernStyle.SECONDARY)
         processing_section.pack(fill=tk.BOTH, expand=True)
-        
+
         # Image settings area (before convert button)
         image_settings_area = tk.Frame(processing_section, bg=ModernStyle.SURFACE)
         image_settings_area.pack(fill=tk.X, padx=20, pady=(20, 10))
-        
-
 
         # Convert button area
         button_area = tk.Frame(processing_section, bg=ModernStyle.SURFACE)
         button_area.pack(fill=tk.X, padx=20, pady=20)
-        
+
         self.convert_btn = self.create_modern_action_button(
             button_area,
             "🚀 Convert Files",
@@ -141,11 +146,11 @@ class DocumentConverterTab:
             state="disabled"
         )
         self.convert_btn.pack(anchor=tk.CENTER)
-        
+
         # Progress area
         progress_area = tk.Frame(processing_section, bg=ModernStyle.SURFACE)
         progress_area.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
-        
+
         # Progress label
         progress_label_font = font.Font(family="Segoe UI", size=10, weight="bold")
         progress_title = tk.Label(
@@ -156,14 +161,14 @@ class DocumentConverterTab:
             fg=ModernStyle.TEXT_PRIMARY
         )
         progress_title.pack(anchor=tk.W, pady=(0, 10))
-        
+
         # Modern progress bar
         self.setup_modern_progress_bar(progress_area)
-        
+
         # Status area
         status_area = tk.Frame(progress_area, bg=ModernStyle.SURFACE_DARK, relief=tk.FLAT)
         status_area.pack(fill=tk.X, pady=(15, 0))
-        
+
         status_font = font.Font(family="Segoe UI", size=9)
         self.status_label = tk.Label(
             status_area,
@@ -179,12 +184,12 @@ class DocumentConverterTab:
         """Create a modern section with accent color"""
         section_frame = tk.Frame(parent, bg=ModernStyle.SURFACE, relief=tk.FLAT)
         section_frame.configure(highlightbackground=ModernStyle.BORDER, highlightthickness=1)
-        
+
         # Section header with accent
         header_frame = tk.Frame(section_frame, bg=accent_color, height=40)
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
-        
+
         header_font = font.Font(family="Segoe UI", size=14, weight="bold")
         header_label = tk.Label(
             header_frame,
@@ -194,22 +199,22 @@ class DocumentConverterTab:
             fg="white"
         )
         header_label.pack(anchor=tk.W, padx=20, pady=10)
-        
+
         return section_frame
-    
+
     def create_modern_upload_card(self, parent, icon, title, description, command, label_attr):
         """Create a modern upload card with full-width design"""
         card_frame = tk.Frame(parent, bg=ModernStyle.SURFACE)
         card_frame.pack(fill=tk.X, padx=20, pady=10)
-        
+
         # Card content with hover effect simulation
         content_frame = tk.Frame(card_frame, bg=ModernStyle.SURFACE_DARK, relief=tk.FLAT, bd=1)
         content_frame.pack(fill=tk.X, pady=2)
-        
+
         # Icon and content area
         main_content = tk.Frame(content_frame, bg=ModernStyle.SURFACE_DARK)
         main_content.pack(fill=tk.X, padx=15, pady=12)
-        
+
         # Icon
         icon_font = font.Font(family="Segoe UI", size=20)
         icon_label = tk.Label(
@@ -221,11 +226,11 @@ class DocumentConverterTab:
             width=3
         )
         icon_label.pack(side=tk.LEFT, padx=(0, 15))
-        
+
         # Text content
         text_content = tk.Frame(main_content, bg=ModernStyle.SURFACE_DARK)
         text_content.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        
+
         title_font = font.Font(family="Segoe UI", size=11, weight="bold")
         title_label = tk.Label(
             text_content,
@@ -235,7 +240,7 @@ class DocumentConverterTab:
             fg=ModernStyle.TEXT_PRIMARY
         )
         title_label.pack(anchor=tk.W)
-        
+
         desc_font = font.Font(family="Segoe UI", size=9)
         desc_label = tk.Label(
             text_content,
@@ -245,14 +250,14 @@ class DocumentConverterTab:
             fg=ModernStyle.TEXT_SECONDARY
         )
         desc_label.pack(anchor=tk.W, pady=(2, 0))
-        
+
         # Status label
         status_font = font.Font(family="Segoe UI", size=8)
         if "Optional" in title:
             default_text = "Optional - not selected"
         else:
             default_text = "No file selected"
-            
+
         status_label = tk.Label(
             text_content,
             text=default_text,
@@ -262,13 +267,13 @@ class DocumentConverterTab:
         )
         status_label.pack(anchor=tk.W, pady=(4, 0))
         setattr(self, label_attr, status_label)
-        
+
         # Button
         if "Folder" in title:
             button_text = "Choose Folder"
         else:
             button_text = "Choose File"
-            
+
         button = self.create_modern_button(
             main_content,
             button_text,
@@ -280,7 +285,7 @@ class DocumentConverterTab:
     def create_modern_button(self, parent, text, command, color):
         """Create a modern button with rounded appearance"""
         btn_font = font.Font(family="Segoe UI", size=9, weight="bold")
-        
+
         button = tk.Button(
             parent,
             text=text,
@@ -294,22 +299,23 @@ class DocumentConverterTab:
             pady=8,
             cursor="hand2"
         )
-        
+
         # Hover effects
         def on_enter(e):
             button.configure(bg=self.darken_color(color))
+
         def on_leave(e):
             button.configure(bg=color)
-        
+
         button.bind("<Enter>", on_enter)
         button.bind("<Leave>", on_leave)
-        
+
         return button
-    
+
     def create_modern_action_button(self, parent, text, command, state="normal"):
         """Create a large modern action button with appealing colors"""
         btn_font = font.Font(family="Segoe UI", size=12, weight="bold")
-        
+
         if state == "disabled":
             bg_color = ModernStyle.BUTTON_DISABLED
             text_color = "#64748B"
@@ -318,7 +324,7 @@ class DocumentConverterTab:
             bg_color = ModernStyle.BUTTON_PRIMARY
             text_color = "white"
             cursor = "hand2"
-        
+
         button = tk.Button(
             parent,
             text=text,
@@ -333,22 +339,22 @@ class DocumentConverterTab:
             cursor=cursor,
             state=state
         )
-        
+
         return button
-    
+
     def setup_modern_progress_bar(self, parent):
         """Setup modern progress bar with custom styling"""
         progress_container = tk.Frame(parent, bg=ModernStyle.SURFACE)
         progress_container.pack(fill=tk.X, pady=(0, 10))
-        
+
         # Custom progress bar background
         progress_bg = tk.Frame(progress_container, bg=ModernStyle.SURFACE_DARK, height=8)
         progress_bg.pack(fill=tk.X, pady=(0, 5))
-        
+
         # Progress fill
         self.progress_fill = tk.Frame(progress_bg, bg=ModernStyle.PRIMARY, height=8)
         self.progress_fill.place(x=0, y=0, width=0, height=8)
-        
+
         # Progress percentage
         self.progress_text = tk.Label(
             progress_container,
@@ -358,13 +364,13 @@ class DocumentConverterTab:
             fg=ModernStyle.TEXT_SECONDARY
         )
         self.progress_text.pack(anchor=tk.E)
-        
+
         # Store the background frame for width calculations
         self.progress_bg_frame = progress_bg
-        
+
         # Initialize progress
         self.progress_value = 0
-    
+
     def update_progress(self, value):
         """Update the custom progress bar"""
         self.progress_value = value
@@ -375,7 +381,7 @@ class DocumentConverterTab:
                 fill_width = int((value / 100) * bg_width)
                 self.progress_fill.place(width=fill_width)
                 self.progress_text.config(text=f"{int(value)}%")
-    
+
     def darken_color(self, color):
         """Darken a hex color for hover effect"""
         color_map = {
@@ -386,7 +392,7 @@ class DocumentConverterTab:
             ModernStyle.BUTTON_PRIMARY: ModernStyle.BUTTON_PRIMARY_HOVER
         }
         return color_map.get(color, color)
-    
+
     def update_file_status(self, label, filename, success=True):
         """Update file status with modern styling"""
         if success:
@@ -411,7 +417,7 @@ class DocumentConverterTab:
             self.update_file_status(self.word_label, Path(file_path).name, True)
             self._preload_placeholders()
             self.check_ready_to_convert()
-    
+
     def upload_excel_file(self):
         file_path = filedialog.askopenfilename(
             title="Select Excel File",
@@ -421,7 +427,7 @@ class DocumentConverterTab:
             self.excel_file_path = file_path
             self.update_file_status(self.excel_label, Path(file_path).name, True)
             self.check_ready_to_convert()
-    
+
     def upload_additional_files(self):
         file_paths = filedialog.askopenfilenames(
             title="Select Additional Excel Files",
@@ -432,7 +438,7 @@ class DocumentConverterTab:
             self.update_file_status(self.additional_label, f"{len(file_paths)} files selected", True)
             self._preload_additional_data()
             self.check_ready_to_convert()
-    
+
     def upload_image_folder(self):
         folder_path = filedialog.askdirectory(
             title="Select Image Folder"
@@ -441,8 +447,8 @@ class DocumentConverterTab:
             self.image_folder_path = folder_path
             # Count image files in the folder
             image_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp')
-            image_count = sum(1 for f in os.listdir(folder_path) 
-                            if f.lower().endswith(image_extensions))
+            image_count = sum(1 for f in os.listdir(folder_path)
+                              if f.lower().endswith(image_extensions))
             self.update_file_status(self.image_label, f"{image_count} images found", True)
 
     def check_ready_to_convert(self):
@@ -453,12 +459,13 @@ class DocumentConverterTab:
                 fg="white",
                 cursor="hand2"
             )
-            
+
             def on_enter(e):
                 self.convert_btn.configure(bg=ModernStyle.BUTTON_PRIMARY_HOVER)
+
             def on_leave(e):
                 self.convert_btn.configure(bg=ModernStyle.BUTTON_PRIMARY)
-            
+
             self.convert_btn.bind("<Enter>", on_enter)
             self.convert_btn.bind("<Leave>", on_leave)
         else:
@@ -478,15 +485,15 @@ class DocumentConverterTab:
             self._placeholders_cache = self.find_placeholders(template_doc)
         except Exception as e:
             print(f"Error pre-loading placeholders: {e}")
-    
+
     def _preload_additional_data(self):
         """Pre-load all additional data into memory for faster access"""
         self._additional_data_cache = {}
-        
+
         for file_path in self.additional_excel_paths:
             try:
                 df = pd.read_excel(file_path, header=None)
-                
+
                 # Find PARENT_KEY column in row 4 (index 3)
                 parent_key_col = None
                 if len(df) > 3:
@@ -494,30 +501,30 @@ class DocumentConverterTab:
                         if pd.notna(cell_value) and str(cell_value).strip().upper() == "PARENT_KEY":
                             parent_key_col = col_idx
                             break
-                
+
                 if parent_key_col is not None:
                     # Get headers from row 4
                     headers = df.iloc[3].tolist()
-                    
+
                     # Get data rows (from row 5 onwards)
                     data_rows = df.iloc[4:]
-                    
+
                     # Group data by PARENT_KEY for O(1) lookup
                     for _, row in data_rows.iterrows():
                         if pd.notna(row.iloc[parent_key_col]):
                             key_value = str(row.iloc[parent_key_col]).strip()
-                            
+
                             if key_value not in self._additional_data_cache:
                                 self._additional_data_cache[key_value] = []
-                            
+
                             # Create a dictionary mapping header to value
                             row_data = {}
                             for idx, header in enumerate(headers):
                                 if pd.notna(header):
                                     row_data[str(header).strip()] = row.iloc[idx] if pd.notna(row.iloc[idx]) else ""
-                            
+
                             self._additional_data_cache[key_value].append(row_data)
-                            
+
             except Exception as e:
                 print(f"Error pre-loading additional file {file_path}: {e}")
 
@@ -526,22 +533,22 @@ class DocumentConverterTab:
         """Find all placeholders in the document like {firstname} - cached for performance"""
         if self._placeholders_cache:
             return self._placeholders_cache
-            
+
         placeholders = set()
-        
+
         if doc is None and self.word_template_path:
             doc = Document(self.word_template_path)
-        
+
         # Search in paragraphs
         for paragraph in doc.paragraphs:
             matches = re.findall(r'\{([^}]+)\}', paragraph.text)
             placeholders.update(matches)
-        
+
         # Search in tables (including nested tables)
         self._search_tables_for_placeholders(doc.tables, placeholders)
-        
+
         return list(placeholders)
-    
+
     def _search_tables_for_placeholders(self, tables, placeholders):
         """Recursively search tables and nested tables for placeholders"""
         for table in tables:
@@ -550,29 +557,29 @@ class DocumentConverterTab:
                     # Search text in cell
                     matches = re.findall(r'\{([^}]+)\}', cell.text)
                     placeholders.update(matches)
-                    
+
                     # Search for nested tables in this cell
                     if cell.tables:
                         self._search_tables_for_placeholders(cell.tables, placeholders)
-    
+
     def find_column_mapping(self, df, placeholders):
         """Find column mapping - cached for performance"""
         if self._column_mapping_cache:
             return self._column_mapping_cache
-            
+
         column_mapping = {}
-        
+
         # Get all possible column values from rows 1, 2, 3, and 4 (index 0, 1, 2, 3)
         search_rows = min(4, len(df))  # Search in first 4 rows
-        
+
         for placeholder in placeholders:
             found = False
-            
+
             # Search through each row (1, 2, 3, 4)
             for row_idx in range(search_rows):
                 for col_idx, col_name in enumerate(df.columns):
                     cell_value = df.iloc[row_idx, col_idx]
-                    
+
                     # Check if entire cell content matches the placeholder (case-insensitive)
                     if pd.notna(cell_value):
                         cell_str = str(cell_value).strip()
@@ -580,32 +587,32 @@ class DocumentConverterTab:
                             column_mapping[placeholder] = col_name
                             found = True
                             break
-                
+
                 if found:
                     break
-            
+
             if not found:
                 print(f"Warning: Placeholder '{placeholder}' not found in any of the first 4 rows")
-        
+
         self._column_mapping_cache = column_mapping
         return column_mapping
-    
+
     def replace_placeholders_optimized(self, doc, data_row):
         """Optimized placeholder replacement using compiled regex with image support"""
         # Pre-compile regex for better performance
         placeholder_pattern = re.compile(r'\{([^}]+)\}')
-        
+
         # Get image width setting
         try:
             image_width = float(self.image_width_var.get())
         except:
             image_width = 1.0
-        
+
         # Process bus_info_needs ranking if present
         if 'bus_info_needs' in data_row:
             ranked_data = self.process_bus_info_needs_ranking(data_row)
             data_row.update(ranked_data)
-        
+
         # Replace in paragraphs
         for paragraph in doc.paragraphs:
             original_text = paragraph.text
@@ -617,7 +624,7 @@ class DocumentConverterTab:
                         # Try different image extensions
                         image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp']
                         image_found = False
-                        
+
                         for ext in [''] + image_extensions:  # Try without extension first, then with extensions
                             if ext == '':
                                 test_filename = image_filename
@@ -625,23 +632,23 @@ class DocumentConverterTab:
                                 # Remove existing extension if any, then add new one
                                 base_name = os.path.splitext(image_filename)[0]
                                 test_filename = base_name + ext
-                            
+
                             image_path = os.path.join(self.image_folder_path, test_filename)
                             if os.path.exists(image_path):
                                 if self.replace_image_in_paragraph(paragraph, image_path, image_width, 'resp_pix'):
                                     image_found = True
                                     break
-                        
+
                         if image_found:
                             continue  # Skip text replacement if image was inserted
-                
+
                 # Regular text replacement
                 new_text = original_text
                 for key, value in data_row.items():
                     new_text = new_text.replace(f'{{{key}}}', str(value))
                 if new_text != original_text:
                     paragraph.text = new_text
-        
+
         # Replace in tables (including nested tables)
         self._replace_in_tables_optimized(doc.tables, data_row, image_width)
 
@@ -649,10 +656,10 @@ class DocumentConverterTab:
         """Process bus_info_needs column to create ranked lists and reasons"""
         bus_info_needs = str(data_row.get('bus_info_needs', '')).strip()
         bus_info_needs_o = str(data_row.get('bus_info_needs_o', '')).strip()
-        
+
         # Initialize result dictionary
         result = {}
-        
+
         if not bus_info_needs or bus_info_needs.lower() in ['nan', 'na', '']:
             # If no data, return empty strings for all placeholders
             result['bus_info_needs'] = ''
@@ -660,10 +667,10 @@ class DocumentConverterTab:
             for i in range(1, 10):
                 result[f'bus_info_needs_rank_reason{i}'] = ''
             return result
-        
+
         # Split the comma-separated values and clean them
         items = [item.strip() for item in bus_info_needs.split(',') if item.strip()]
-        
+
         # Process items in order - the order determines the ranking
         processed_items = []
         for item in items:
@@ -678,14 +685,14 @@ class DocumentConverterTab:
                         processed_items.append("Others, specify")
                 else:
                     processed_items.append(item_clean)
-        
+
         # Create the ranked list output - each item on a new line
         result['bus_info_needs'] = '\n'.join(processed_items)
-        
+
         # Create rank numbers corresponding to each item
         rank_numbers = [str(i) for i in range(1, len(processed_items) + 1)]
         result['bus_info_needs_rank'] = '\n'.join(rank_numbers)
-        
+
         # Add individual reason placeholders (bus_info_needs_rank_reason1 to bus_info_needs_rank_reason9)
         for i in range(1, 10):
             reason_key = f'bus_info_needs_rank_reason{i}'
@@ -698,25 +705,25 @@ class DocumentConverterTab:
                     result[reason_key] = f"{{{reason_key}}}"
             else:
                 result[reason_key] = ''
-        
+
         return result
 
     def replace_placeholders_optimized(self, doc, data_row):
         """Optimized placeholder replacement using compiled regex with image support"""
         # Pre-compile regex for better performance
         placeholder_pattern = re.compile(r'\{([^}]+)\}')
-        
+
         # Get image width setting
         try:
             image_width = float(self.image_width_var.get())
         except:
             image_width = 1.0
-        
+
         # Process bus_info_needs ranking if present
         if 'bus_info_needs' in data_row:
             ranked_data = self.process_bus_info_needs_ranking(data_row)
             data_row.update(ranked_data)
-        
+
         # Replace in paragraphs
         for paragraph in doc.paragraphs:
             original_text = paragraph.text
@@ -728,7 +735,7 @@ class DocumentConverterTab:
                         # Try different image extensions
                         image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp']
                         image_found = False
-                        
+
                         for ext in [''] + image_extensions:  # Try without extension first, then with extensions
                             if ext == '':
                                 test_filename = image_filename
@@ -736,23 +743,23 @@ class DocumentConverterTab:
                                 # Remove existing extension if any, then add new one
                                 base_name = os.path.splitext(image_filename)[0]
                                 test_filename = base_name + ext
-                            
+
                             image_path = os.path.join(self.image_folder_path, test_filename)
                             if os.path.exists(image_path):
                                 if self.replace_image_in_paragraph(paragraph, image_path, image_width, 'resp_pix'):
                                     image_found = True
                                     break
-                        
+
                         if image_found:
                             continue  # Skip text replacement if image was inserted
-                
+
                 # Regular text replacement
                 new_text = original_text
                 for key, value in data_row.items():
                     new_text = new_text.replace(f'{{{key}}}', str(value))
                 if new_text != original_text:
                     paragraph.text = new_text
-        
+
         # Replace in tables (including nested tables)
         self._replace_in_tables_optimized(doc.tables, data_row, image_width)
 
@@ -760,10 +767,10 @@ class DocumentConverterTab:
         """Process bus_info_needs column to create ranked lists and reasons"""
         bus_info_needs = str(data_row.get('bus_info_needs', '')).strip()
         bus_info_needs_o = str(data_row.get('bus_info_needs_o', '')).strip()
-        
+
         # Initialize result dictionary
         result = {}
-        
+
         if not bus_info_needs or bus_info_needs.lower() in ['nan', 'na', '']:
             # If no data, return empty strings for all placeholders
             result['bus_info_needs'] = ''
@@ -771,10 +778,10 @@ class DocumentConverterTab:
             for i in range(1, 10):
                 result[f'bus_info_needs_rank_reason{i}'] = ''
             return result
-        
+
         # Split the comma-separated values and clean them
         items = [item.strip() for item in bus_info_needs.split(',') if item.strip()]
-        
+
         # Process items in order - the order determines the ranking
         processed_items = []
         for item in items:
@@ -789,14 +796,14 @@ class DocumentConverterTab:
                         processed_items.append("Others, specify")
                 else:
                     processed_items.append(item_clean)
-        
+
         # Create the ranked list output - each item on a new line
         result['bus_info_needs'] = '\n'.join(processed_items)
-        
+
         # Create rank numbers corresponding to each item
         rank_numbers = [str(i) for i in range(1, len(processed_items) + 1)]
         result['bus_info_needs_rank'] = '\n'.join(rank_numbers)
-        
+
         # Add individual reason placeholders (bus_info_needs_rank_reason1 to bus_info_needs_rank_reason9)
         for i in range(1, 10):
             reason_key = f'bus_info_needs_rank_reason{i}'
@@ -809,25 +816,25 @@ class DocumentConverterTab:
                     result[reason_key] = f"{{{reason_key}}}"
             else:
                 result[reason_key] = ''
-        
+
         return result
 
     def replace_placeholders_optimized(self, doc, data_row):
         """Optimized placeholder replacement using compiled regex with image support"""
         # Pre-compile regex for better performance
         placeholder_pattern = re.compile(r'\{([^}]+)\}')
-        
+
         # Get image width setting
         try:
             image_width = float(self.image_width_var.get())
         except:
             image_width = 1.0
-        
+
         # Process bus_info_needs ranking if present
         if 'bus_info_needs' in data_row:
             ranked_data = self.process_bus_info_needs_ranking(data_row)
             data_row.update(ranked_data)
-        
+
         # Replace in paragraphs
         for paragraph in doc.paragraphs:
             original_text = paragraph.text
@@ -839,7 +846,7 @@ class DocumentConverterTab:
                         # Try different image extensions
                         image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp']
                         image_found = False
-                        
+
                         for ext in [''] + image_extensions:  # Try without extension first, then with extensions
                             if ext == '':
                                 test_filename = image_filename
@@ -847,23 +854,23 @@ class DocumentConverterTab:
                                 # Remove existing extension if any, then add new one
                                 base_name = os.path.splitext(image_filename)[0]
                                 test_filename = base_name + ext
-                            
+
                             image_path = os.path.join(self.image_folder_path, test_filename)
                             if os.path.exists(image_path):
                                 if self.replace_image_in_paragraph(paragraph, image_path, image_width, 'resp_pix'):
                                     image_found = True
                                     break
-                        
+
                         if image_found:
                             continue  # Skip text replacement if image was inserted
-                
+
                 # Regular text replacement
                 new_text = original_text
                 for key, value in data_row.items():
                     new_text = new_text.replace(f'{{{key}}}', str(value))
                 if new_text != original_text:
                     paragraph.text = new_text
-        
+
         # Replace in tables (including nested tables)
         self._replace_in_tables_optimized(doc.tables, data_row, image_width)
 
@@ -871,10 +878,10 @@ class DocumentConverterTab:
         """Process bus_info_needs column to create ranked lists and reasons"""
         bus_info_needs = str(data_row.get('bus_info_needs', '')).strip()
         bus_info_needs_o = str(data_row.get('bus_info_needs_o', '')).strip()
-        
+
         # Initialize result dictionary
         result = {}
-        
+
         if not bus_info_needs or bus_info_needs.lower() in ['nan', 'na', '']:
             # If no data, return empty strings for all placeholders
             result['bus_info_needs'] = ''
@@ -882,10 +889,10 @@ class DocumentConverterTab:
             for i in range(1, 10):
                 result[f'bus_info_needs_rank_reason{i}'] = ''
             return result
-        
+
         # Split the comma-separated values and clean them
         items = [item.strip() for item in bus_info_needs.split(',') if item.strip()]
-        
+
         # Process items in order - the order determines the ranking
         processed_items = []
         for item in items:
@@ -900,14 +907,14 @@ class DocumentConverterTab:
                         processed_items.append("Others, specify")
                 else:
                     processed_items.append(item_clean)
-        
+
         # Create the ranked list output - each item on a new line
         result['bus_info_needs'] = '\n'.join(processed_items)
-        
+
         # Create rank numbers corresponding to each item
         rank_numbers = [str(i) for i in range(1, len(processed_items) + 1)]
         result['bus_info_needs_rank'] = '\n'.join(rank_numbers)
-        
+
         # Add individual reason placeholders (bus_info_needs_rank_reason1 to bus_info_needs_rank_reason9)
         for i in range(1, 10):
             reason_key = f'bus_info_needs_rank_reason{i}'
@@ -920,25 +927,25 @@ class DocumentConverterTab:
                     result[reason_key] = f"{{{reason_key}}}"
             else:
                 result[reason_key] = ''
-        
+
         return result
 
     def replace_placeholders_optimized(self, doc, data_row):
         """Optimized placeholder replacement using compiled regex with image support"""
         # Pre-compile regex for better performance
         placeholder_pattern = re.compile(r'\{([^}]+)\}')
-        
+
         # Get image width setting
         try:
             image_width = float(self.image_width_var.get())
         except:
             image_width = 1.0
-        
+
         # Process bus_info_needs ranking if present
         if 'bus_info_needs' in data_row:
             ranked_data = self.process_bus_info_needs_ranking(data_row)
             data_row.update(ranked_data)
-        
+
         # Replace in paragraphs
         for paragraph in doc.paragraphs:
             original_text = paragraph.text
@@ -950,7 +957,7 @@ class DocumentConverterTab:
                         # Try different image extensions
                         image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp']
                         image_found = False
-                        
+
                         for ext in [''] + image_extensions:  # Try without extension first, then with extensions
                             if ext == '':
                                 test_filename = image_filename
@@ -958,23 +965,23 @@ class DocumentConverterTab:
                                 # Remove existing extension if any, then add new one
                                 base_name = os.path.splitext(image_filename)[0]
                                 test_filename = base_name + ext
-                            
+
                             image_path = os.path.join(self.image_folder_path, test_filename)
                             if os.path.exists(image_path):
                                 if self.replace_image_in_paragraph(paragraph, image_path, image_width, 'resp_pix'):
                                     image_found = True
                                     break
-                        
+
                         if image_found:
                             continue  # Skip text replacement if image was inserted
-                
+
                 # Regular text replacement
                 new_text = original_text
                 for key, value in data_row.items():
                     new_text = new_text.replace(f'{{{key}}}', str(value))
                 if new_text != original_text:
                     paragraph.text = new_text
-        
+
         # Replace in tables (including nested tables)
         self._replace_in_tables_optimized(doc.tables, data_row, image_width)
 
@@ -982,16 +989,16 @@ class DocumentConverterTab:
         """Handle special replacement for bus_info_needs table cells"""
         # Process the ranking data first
         ranked_data = self.process_bus_info_needs_ranking(data_row)
-        
+
         # Handle each paragraph in the cell
         for paragraph in cell.paragraphs:
             original_text = paragraph.text
-            
+
             # Handle the main question column - just replace the placeholder, don't add items here
             if '{bus_info_needs}' in original_text:
                 # For the main question cell, just remove the placeholder
                 new_text = original_text.replace('{bus_info_needs}', '')
-                
+
                 # Handle others specification
                 if '{bus_info_needs_o}' in new_text:
                     bus_info_needs_o = str(data_row.get('bus_info_needs_o', '')).strip()
@@ -1000,9 +1007,9 @@ class DocumentConverterTab:
                     else:
                         new_text = new_text.replace('if others{bus_info_needs_o}', '')
                         new_text = new_text.replace('{bus_info_needs_o}', '')
-                
+
                 paragraph.text = new_text
-            
+
             # Handle rank column - just remove the placeholder, don't add ranks here
             elif 'Rank, by order of importance' in original_text or '{bus_info_needs_rank}' in original_text:
                 if '{bus_info_needs_rank}' in original_text:
@@ -1010,7 +1017,7 @@ class DocumentConverterTab:
                 else:
                     new_text = original_text
                 paragraph.text = new_text
-            
+
             # Handle reason columns - replace individual reason placeholders
             elif '{bus_info_needs_rank_reason' in original_text:
                 new_text = original_text
@@ -1018,7 +1025,7 @@ class DocumentConverterTab:
                     if key.startswith('bus_info_needs_rank_reason'):
                         new_text = new_text.replace(f'{{{key}}}', str(value))
                 paragraph.text = new_text
-            
+
             # Handle any other placeholders in this cell
             else:
                 new_text = original_text
@@ -1030,7 +1037,7 @@ class DocumentConverterTab:
                 for key, value in ranked_data.items():
                     if f'{{{key}}}' in new_text:
                         new_text = new_text.replace(f'{{{key}}}', str(value))
-                
+
                 if new_text != original_text:
                     paragraph.text = new_text
 
@@ -1038,38 +1045,38 @@ class DocumentConverterTab:
         """Populate the bus_info_needs table with ranked items in separate rows"""
         # Process the ranking data
         ranked_data = self.process_bus_info_needs_ranking(data_row)
-        
+
         # Get the items list
         items_text = ranked_data['bus_info_needs']
         if not items_text:
             return
-            
+
         items = items_text.split('\n')
-        
+
         # Find the table structure - typically has 3 columns
         # Column 1: What types of information would be helpful...
-        # Column 2: Rank, by order of importance  
+        # Column 2: Rank, by order of importance
         # Column 3: Why is this information useful...
-        
+
         # Keep the header rows (typically first 2 rows) and remove any existing data rows
         header_rows = 2  # Adjust this based on your table structure
         while len(table.rows) > header_rows:
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add a row for each item
         for i, item in enumerate(items, 1):
             if item.strip():  # Only add non-empty items
                 new_row = table.add_row()
                 cells = new_row.cells
-                
+
                 # Column 1: Item text
                 if len(cells) > 0:
                     cells[0].text = item.strip()
-                
+
                 # Column 2: Rank number
                 if len(cells) > 1:
                     cells[1].text = str(i)
-                
+
                 # Column 3: Reason (if available)
                 if len(cells) > 2:
                     reason_key = f'bus_info_needs_rank_reason{i}'
@@ -1083,12 +1090,12 @@ class DocumentConverterTab:
         for table in tables:
             # Check if this is a bus_info_needs table before processing individual cells
             table_text = ' '.join(cell.text for row in table.rows[:2] for cell in row.cells)
-            
+
             if self.is_bus_info_needs_table(table_text):
                 # Handle the entire bus_info_needs table
                 self.populate_bus_info_needs_table(table, data_row)
                 continue
-            
+
             # Regular table processing for non-bus_info_needs tables
             for row in table.rows:
                 for cell in row.cells:
@@ -1103,38 +1110,40 @@ class DocumentConverterTab:
                                     # Try different image extensions
                                     image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp']
                                     image_found = False
-                                    
-                                    for ext in [''] + image_extensions:  # Try without extension first, then with extensions
+
+                                    for ext in [
+                                                   ''] + image_extensions:  # Try without extension first, then with extensions
                                         if ext == '':
                                             test_filename = image_filename
                                         else:
                                             # Remove existing extension if any, then add new one
                                             base_name = os.path.splitext(image_filename)[0]
                                             test_filename = base_name + ext
-                                        
+
                                         image_path = os.path.join(self.image_folder_path, test_filename)
                                         if os.path.exists(image_path):
-                                            if self.replace_image_in_paragraph(paragraph, image_path, image_width, 'resp_pix'):
+                                            if self.replace_image_in_paragraph(paragraph, image_path, image_width,
+                                                                               'resp_pix'):
                                                 image_found = True
                                                 break
-                                    
+
                                     if image_found:
                                         continue  # Skip text replacement if image was inserted
-                            
+
                             # Regular text replacement
                             new_text = original_text
                             for key, value in data_row.items():
                                 new_text = new_text.replace(f'{{{key}}}', str(value))
                             if new_text != original_text:
                                 paragraph.text = new_text
-                    
+
                     # Handle nested tables in this cell
                     if cell.tables:
                         self._replace_in_tables_optimized(cell.tables, data_row, image_width)
 
     def is_bus_info_needs_table(self, text):
         """Check if this is the bus_info_needs table section"""
-        return ('{bus_info_needs}' in text or 
+        return ('{bus_info_needs}' in text or
                 'What types of information would be helpful' in text or
                 'Information Needs' in text)
 
@@ -1178,95 +1187,97 @@ class DocumentConverterTab:
             try:
                 self.status_label.config(text="🔄 Initializing conversion...", fg=ModernStyle.PRIMARY)
                 self.update_progress(0)
-                
+
                 destination_path = filedialog.askdirectory(title="Select Destination Folder for ZIP File")
                 if not destination_path:
                     self.status_label.config(text="Ready to process your files", fg=ModernStyle.TEXT_SECONDARY)
                     return
-                
+
                 df = pd.read_excel(self.excel_file_path, header=None)
                 placeholders = self._placeholders_cache or self.find_placeholders()
-                
+
                 if not placeholders:
                     messagebox.showwarning("Warning", "No placeholders found in template")
                     return
-                
+
                 column_mapping = self.find_column_mapping(df, placeholders)
-                
+
                 if not column_mapping:
-                    messagebox.showerror("Error", "No matching columns found between template and Excel headers in rows 1-3")
+                    messagebox.showerror("Error",
+                                         "No matching columns found between template and Excel headers in rows 1-3")
                     return
-                
+
                 key_column = None
                 if len(df) > 3:
                     for col_idx, cell_value in enumerate(df.iloc[3]):
                         if pd.notna(cell_value) and str(cell_value).strip().upper() == "KEY":
                             key_column = col_idx
                             break
-                
+
                 if key_column is None:
                     messagebox.showerror("Error", "KEY column not found in row 4 of main Excel file")
                     return
-                
+
                 data_rows = df.iloc[4:].copy()
-                
+
                 if data_rows.empty:
                     messagebox.showwarning("Warning", "No data found starting from row 5")
                     return
-                
+
                 temp_dir = Path(destination_path) / "temp_documents"
                 temp_dir.mkdir(exist_ok=True)
-                
+
                 total_rows = len(data_rows)
                 generated_files = []
-                
+
                 process_args = []
                 for idx, (original_row_idx, row) in enumerate(data_rows.iterrows()):
                     process_args.append((idx, original_row_idx, row, column_mapping, key_column, temp_dir))
-                
+
                 max_workers = min(4, os.cpu_count() or 1)
                 completed_count = 0
-                
+
                 with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                    future_to_args = {executor.submit(self.process_single_document, args): args for args in process_args}
-                    
+                    future_to_args = {executor.submit(self.process_single_document, args): args for args in
+                                      process_args}
+
                     for future in as_completed(future_to_args):
                         result, error = future.result()
                         completed_count += 1
-                        
+
                         if result:
                             generated_files.append(result)
                         else:
                             print(f"Error processing document: {error}")
-                        
+
                         progress_value = (completed_count / total_rows) * 80
                         self.update_progress(progress_value)
                         self.status_label.config(
                             text=f"📝 Processing document {completed_count} of {total_rows}",
                             fg=ModernStyle.PRIMARY
                         )
-                
+
                 self.status_label.config(text="📦 Creating ZIP file...", fg=ModernStyle.ACCENT)
                 self.update_progress(85)
-                
+
                 zip_path = Path(destination_path) / "Generated_Documents.zip"
                 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                     for file_path in generated_files:
                         zipf.write(file_path, file_path.name)
-                
+
                 for file_path in generated_files:
                     if file_path.exists():
                         file_path.unlink()
                 if temp_dir.exists():
                     temp_dir.rmdir()
-                
+
                 self.update_progress(100)
                 self.status_label.config(
                     text=f"✅ Successfully generated {total_rows} documents!",
                     fg=ModernStyle.SUCCESS
                 )
                 messagebox.showinfo("Success", f"🎉 Generated {total_rows} documents in ZIP file:\n{zip_path}")
-                
+
             except Exception as e:
                 print(f"Error occurred: {str(e)}")
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
@@ -1274,16 +1285,17 @@ class DocumentConverterTab:
             finally:
                 self.update_progress(0)
                 self.parent_frame.after(3000, lambda: self.status_label.config(
-                    text="Ready to process your files", 
+                    text="Ready to process your files",
                     fg=ModernStyle.TEXT_SECONDARY
                 ))
-        
+                self.parent_frame.after(3100, self.reset_tab)
+
         threading.Thread(target=conversion_worker, daemon=True).start()
 
     def get_additional_data_for_key_optimized(self, key_value):
         """Get all matching rows from pre-loaded cache - O(1) lookup"""
         return self._additional_data_cache.get(str(key_value).strip(), [])
-    
+
     def populate_dynamic_tables_optimized(self, doc, additional_rows):
         """Optimized dynamic table population with pre-categorized data"""
         # More comprehensive categorization with better debugging
@@ -1299,14 +1311,14 @@ class DocumentConverterTab:
             'income_loss': [],
             'others': []
         }
-        
+
         # Initialize totals for calculations
         hh_calc_total_sum = 0
-            
+
         # Categorize each row
         for row in additional_rows:
             row_keys = list(row.keys())
-            
+
             # Check for different patterns
             if any('crop' in key.lower() for key in row_keys):
                 categorized_data['crop'].append(row)
@@ -1340,7 +1352,7 @@ class DocumentConverterTab:
         for table in doc.tables:
             # Use more efficient table identification
             first_two_rows_text = ' '.join(cell.text for row in table.rows[:2] for cell in row.cells)
-            #business and household main tables
+            # business and household main tables
             if "Name of HH Member" in first_two_rows_text:
                 self.populate_hh_member_table(table, categorized_data['hh_member'])
             elif "Ownership of at least one savings account" in first_two_rows_text:
@@ -1355,15 +1367,15 @@ class DocumentConverterTab:
                 self.populate_structure_assets_table(table, categorized_data['struct'])
             elif "13.3 Affected Structure" in first_two_rows_text or "10.3 Affected Structure" in first_two_rows_text:
                 self.populate_affected_structure_table(table, categorized_data['affected_struct'])
-            elif "13.4 Trees" in first_two_rows_text or  "10.4 Trees" in first_two_rows_text:
+            elif "13.4 Trees" in first_two_rows_text or "10.4 Trees" in first_two_rows_text:
                 self.populate_trees_table(table, categorized_data['tree'])
-            elif "13.5 Crops" in first_two_rows_text  or "10.5 Crops" in first_two_rows_text or "crops_grp_converted" in first_two_rows_text.lower():
+            elif "13.5 Crops" in first_two_rows_text or "10.5 Crops" in first_two_rows_text or "crops_grp_converted" in first_two_rows_text.lower():
                 self.populate_crops_table(table, categorized_data['crop'])
-            elif "13.6 Income Loss" in first_two_rows_text  or "10.6 Income Loss" in first_two_rows_text or "income_loss_grp_converted" in first_two_rows_text.lower():
+            elif "13.6 Income Loss" in first_two_rows_text or "10.6 Income Loss" in first_two_rows_text or "income_loss_grp_converted" in first_two_rows_text.lower():
                 self.populate_income_loss_table(table, categorized_data['income_loss'])
             elif "13.7 Others" in first_two_rows_text or "10.7 Others" in first_two_rows_text or "others_grp_converted" in first_two_rows_text.lower():
                 self.populate_others_table(table, categorized_data['others'])
-        
+
         # Replace the sum placeholder in the document
         self.replace_sum_placeholder(doc, 'hh_calc_total_sum', hh_calc_total_sum)
 
@@ -1371,12 +1383,12 @@ class DocumentConverterTab:
         """Replace sum placeholder in the entire document"""
         placeholder_text = f"{{{placeholder_name}}}"
         sum_text = str(sum_value) if sum_value != 0 else "0"
-        
+
         # Replace in paragraphs
         for paragraph in doc.paragraphs:
             if placeholder_text in paragraph.text:
                 paragraph.text = paragraph.text.replace(placeholder_text, sum_text)
-        
+
         # Replace in tables
         for table in doc.tables:
             for row in table.rows:
@@ -1384,7 +1396,7 @@ class DocumentConverterTab:
                     for paragraph in cell.paragraphs:
                         if placeholder_text in paragraph.text:
                             paragraph.text = paragraph.text.replace(placeholder_text, sum_text)
-                    
+
                     # Handle nested tables
                     if cell.tables:
                         self._replace_sum_in_nested_tables(cell.tables, placeholder_text, sum_text)
@@ -1397,7 +1409,7 @@ class DocumentConverterTab:
                     for paragraph in cell.paragraphs:
                         if placeholder_text in paragraph.text:
                             paragraph.text = paragraph.text.replace(placeholder_text, sum_text)
-                    
+
                     # Handle further nested tables
                     if cell.tables:
                         self._replace_sum_in_nested_tables(cell.tables, placeholder_text, sum_text)
@@ -1405,15 +1417,15 @@ class DocumentConverterTab:
     def clear_all_remaining_placeholders_optimized(self, doc):
         """Optimized placeholder clearing with compiled regex"""
         placeholder_pattern = re.compile(r'\{[^}]+\}')
-        
+
         # Clear placeholders in paragraphs
         for paragraph in doc.paragraphs:
             if '{' in paragraph.text:  # Quick check before regex
                 paragraph.text = placeholder_pattern.sub('', paragraph.text)
-        
+
         # Clear placeholders in tables (including nested tables)
         self._clear_tables_placeholders_recursive_optimized(doc.tables, placeholder_pattern)
-    
+
     def _clear_tables_placeholders_recursive_optimized(self, tables, pattern):
         """Optimized recursive placeholder clearing in tables"""
         for table in tables:
@@ -1422,55 +1434,55 @@ class DocumentConverterTab:
                     for paragraph in cell.paragraphs:
                         if '{' in paragraph.text:  # Quick check before regex
                             paragraph.text = pattern.sub('', paragraph.text)
-                    
+
                     # Handle nested tables in this cell
                     if cell.tables:
                         self._clear_tables_placeholders_recursive_optimized(cell.tables, pattern)
-    
+
     def process_single_document(self, args):
         """Process a single document - optimized for parallel processing with image support"""
         try:
             idx, original_row_idx, row, column_mapping, key_column, temp_dir = args
-            
+
             # Create new document from template
             new_doc = Document(self.word_template_path)
-            
+
             # Get KEY value for this row
             key_value = row.iloc[key_column] if pd.notna(row.iloc[key_column]) else ""
-            
+
             # Get additional data from cache (O(1) lookup)
             additional_rows = self.get_additional_data_for_key_optimized(key_value)
-            
+
             # Prepare data for replacement (from main file)
             replacement_data = {}
             for placeholder, column_name in column_mapping.items():
                 replacement_data[placeholder] = row[column_name] if pd.notna(row[column_name]) else ""
-            
+
             # Replace placeholders with optimized method (including images)
             self.replace_placeholders_optimized(new_doc, replacement_data)
-            
+
             # Populate dynamic tables with additional data
             if additional_rows:
                 self.populate_dynamic_tables_optimized(new_doc, additional_rows)
-            
+
             # Clear any remaining placeholders in the entire document
             self.clear_all_remaining_placeholders_optimized(new_doc)
-            
+
             # Generate filename using pckg_brgy and resp_lname
             resp_lname = replacement_data.get('resp_lname', '')
             resp_brgy = replacement_data.get('pckg_brgy', '')
-            
+
             if resp_brgy and str(resp_brgy).strip() and resp_lname and str(resp_lname).strip():
                 # Clean both brgy and last name for filename use
                 clean_brgy = str(resp_brgy).strip()
                 clean_lname = str(resp_lname).strip()
-                
+
                 # Remove invalid filename characters from both
                 invalid_chars = '<>:"/\\|?*'
                 for char in invalid_chars:
                     clean_brgy = clean_brgy.replace(char, '_')
                     clean_lname = clean_lname.replace(char, '_')
-                
+
                 # Limit length of each part and combine
                 clean_brgy = clean_brgy[:15]  # Limit brgy to 15 characters
                 clean_lname = clean_lname[:15]  # Limit lname to 15 characters
@@ -1486,27 +1498,27 @@ class DocumentConverterTab:
             else:
                 # Final fallback to numbered naming
                 filename = f"document_{idx + 1:03d}.docx"
-            
+
             # Save document
             output_path = temp_dir / filename
             new_doc.save(output_path)
-            
+
             return output_path, None
-            
+
         except Exception as e:
             return None, str(e)
-    
+
     def populate_hh_member_table(self, table, additional_rows):
         """Populate the HH Member table with data from additional files"""
         # Keep header rows and remove existing data rows (first row after headers)
         while len(table.rows) > 2:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for idx, row_data in enumerate(additional_rows, start=1):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             # Populate cells based on your table structure
             if len(cells) > 0:
                 cells[0].text = str(idx)  # Row number
@@ -1544,12 +1556,12 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 1:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for idx, row_data in enumerate(additional_rows, start=1):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             if len(cells) > 0:
                 cells[0].text = str(idx)  # Row number
             if len(cells) > 1:
@@ -1580,12 +1592,12 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 3:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for idx, row_data in enumerate(additional_rows, start=1):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             if len(cells) > 0:
                 cells[0].text = str(idx)  # Row number
             if len(cells) > 1:
@@ -1621,12 +1633,12 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 1:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for idx, row_data in enumerate(additional_rows, start=1):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             if len(cells) > 0:
                 debt_src_name = row_data.get('debt_src_name', '')
                 debt_src_name_o = row_data.get('debt_src_name_o', '')
@@ -1666,12 +1678,12 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 2:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for idx, row_data in enumerate(additional_rows, start=1):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             if len(cells) > 0:
                 cells[0].text = str(idx)  # Row number
             if len(cells) > 1:
@@ -1722,12 +1734,12 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 2:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for idx, row_data in enumerate(additional_rows, start=1):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             if len(cells) > 0:
                 cells[0].text = str(idx)  # Row number
             if len(cells) > 1:
@@ -1740,13 +1752,13 @@ class DocumentConverterTab:
                 asset_struct_type = row_data.get('asset_struct_type', '')
                 asset_struct_type_oth = row_data.get('asset_struct_type_oth', '')
                 asset_struct_type_oth_o = row_data.get('asset_struct_type_oth_o', '')
-                
+
                 type_parts = [asset_struct_type]
                 if asset_struct_type_oth and str(asset_struct_type_oth).strip().lower() not in ['', 'nan']:
                     type_parts.append(f"Please Specify {asset_struct_type_oth}")
                 if asset_struct_type_oth_o and str(asset_struct_type_oth_o).strip().lower() not in ['', 'nan']:
                     type_parts.append(str(asset_struct_type_oth))
-                
+
                 cells[4].text = ", ".join([part for part in type_parts if part])
             if len(cells) > 5:
                 asset_struct_use = row_data.get('asset_struct_use', '')
@@ -1790,12 +1802,12 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 2:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for idx, row_data in enumerate(additional_rows, start=1):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             if len(cells) > 0:
                 affctd_struct_type_zz = row_data.get('affctd_struct_type_zz', '')
                 affctd_struct_type_zz_o = row_data.get('affctd_struct_type_zz_o', '')
@@ -1811,7 +1823,8 @@ class DocumentConverterTab:
                 affctd_struct_unit = row_data.get('affctd_struct_unit', '')
                 affctd_struct_ht = row_data.get('affctd_struct_ht', '')
                 unit_parts = [str(affctd_struct_unit), str(affctd_struct_ht)]
-                cells[3].text = ", ".join([part for part in unit_parts if part and str(part).strip().lower() not in ['', 'nan']])
+                cells[3].text = ", ".join(
+                    [part for part in unit_parts if part and str(part).strip().lower() not in ['', 'nan']])
             if len(cells) > 4:
                 cells[4].text = str(row_data.get('affctd_struct_estvalue', ''))
             if len(cells) > 5:
@@ -1824,10 +1837,10 @@ class DocumentConverterTab:
         """Insert multiple images in a table cell from Pix1-Pix10 data in left-right layout"""
         # Clear the cell first
         cell.text = ""
-        
+
         # Get all Pix values
         pix_keys = ['Pix1', 'Pix2', 'Pix3', 'Pix4', 'Pix5', 'Pix6', 'Pix7', 'Pix8', 'Pix9', 'Pix10']
-        
+
         # Check if image folder is available
         if not self.image_folder_path:
             # Fallback to text if no image folder
@@ -1838,21 +1851,21 @@ class DocumentConverterTab:
                     pics.append(str(value))
             cell.text = ", ".join(pics)
             return
-        
+
         # Clear existing paragraphs in the cell
         for paragraph in cell.paragraphs:
             paragraph.clear()
-        
+
         # Collect valid image paths first
         valid_images = []
         for key in pix_keys:
             pix_value = row_data.get(key, '')
             if pix_value and str(pix_value).strip() and str(pix_value).lower() != 'nan':
                 image_filename = str(pix_value).strip()
-                
+
                 # Try different image extensions
                 image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp']
-                
+
                 for ext in [''] + image_extensions:
                     if ext == '':
                         test_filename = image_filename
@@ -1860,7 +1873,7 @@ class DocumentConverterTab:
                         # Remove existing extension if any, then add new one
                         base_name = os.path.splitext(image_filename)[0]
                         test_filename = base_name + ext
-                    
+
                     image_path = os.path.join(self.image_folder_path, test_filename)
                     if os.path.exists(image_path):
                         valid_images.append(image_path)
@@ -1868,19 +1881,19 @@ class DocumentConverterTab:
                 else:
                     # If no image found, add a placeholder
                     valid_images.append(f"[Image not found: {image_filename}]")
-        
+
         if not valid_images:
             cell.text = "No images"
             return
-        
+
         # Arrange images in 2-column layout (left and right)
         for i in range(0, len(valid_images), 2):
             # Create a new paragraph for each row of images
             if i > 0:
                 cell.add_paragraph()
-            
+
             paragraph = cell.paragraphs[0] if i == 0 else cell.add_paragraph()
-            
+
             # Left image
             left_image = valid_images[i]
             if left_image.startswith("[Image not found:"):
@@ -1891,10 +1904,10 @@ class DocumentConverterTab:
                     run.add_picture(left_image, width=Inches(image_width))
                 except Exception as e:
                     paragraph.add_run(f"[Error loading: {os.path.basename(left_image)}]")
-            
+
             # Add space between images
             paragraph.add_run("    ")
-            
+
             # Right image (if exists)
             if i + 1 < len(valid_images):
                 right_image = valid_images[i + 1]
@@ -1912,12 +1925,12 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 1:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows
         for row_data in additional_rows:
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             if len(cells) > 0:
                 cells[0].text = str(row_data.get('tree_type', ''))
             if len(cells) > 1:
@@ -1937,19 +1950,19 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 1:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows using more flexible key matching
         for idx, row_data in enumerate(additional_rows):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             # Try to find the right keys by looking for any key containing these terms
             crop_type = ""
             crop_age = ""
             crop_area = ""
             crop_price = ""
             crop_total = ""
-            
+
             for key, value in row_data.items():
                 key_lower = key.lower()
                 if 'crop' in key_lower and 'type' in key_lower and value:
@@ -1962,7 +1975,7 @@ class DocumentConverterTab:
                     crop_price = str(value)
                 elif 'crop' in key_lower and ('total' in key_lower or 'cost' in key_lower) and value:
                     crop_total = str(value)
-            
+
             if len(cells) > 0:
                 cells[0].text = crop_type
             if len(cells) > 1:
@@ -1984,14 +1997,14 @@ class DocumentConverterTab:
         for idx, row_data in enumerate(additional_rows):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             # Try to find the right keys by looking for any key containing these terms
             loss_type = ""
             loss_qty = ""
             loss_unit = ""
             loss_price = ""
             loss_total = ""
-            
+
             for key, value in row_data.items():
                 key_lower = key.lower()
                 if 'income' in key_lower and 'type' in key_lower and value:
@@ -2004,7 +2017,7 @@ class DocumentConverterTab:
                     loss_price = str(value)
                 elif 'income' in key_lower and ('total' in key_lower or 'cost' in key_lower) and value:
                     loss_total = str(value)
-            
+
             if len(cells) > 0:
                 cells[0].text = loss_type
             if len(cells) > 1:
@@ -2021,19 +2034,19 @@ class DocumentConverterTab:
         # Keep header rows and remove existing data rows
         while len(table.rows) > 1:  # Keep only the header row
             table._tbl.remove(table.rows[-1]._tr)
-        
+
         # Add data rows using more flexible key matching
         for idx, row_data in enumerate(additional_rows):
             new_row = table.add_row()
             cells = new_row.cells
-            
+
             # Try to find the right keys by looking for any key containing these terms
             others_type = ""
             others_qty = ""
             others_unit = ""
             others_price = ""
             others_total = ""
-            
+
             for key, value in row_data.items():
                 key_lower = key.lower()
                 if 'others' in key_lower and 'type' in key_lower and value:
@@ -2046,7 +2059,7 @@ class DocumentConverterTab:
                     others_price = str(value)
                 elif 'others' in key_lower and ('total' in key_lower or 'cost' in key_lower) and value:
                     others_total = str(value)
-            
+
             if len(cells) > 0:
                 cells[0].text = others_type
             if len(cells) > 1:
@@ -2058,24 +2071,55 @@ class DocumentConverterTab:
             if len(cells) > 4:
                 cells[4].text = others_total
 
+    def reset_tab(self):
+        # Reset file paths and caches
+        self.word_template_path = None
+        self.excel_file_path = None
+        self.additional_excel_paths = []
+        self.image_folder_path = None
+        self._placeholders_cache = None
+        self._additional_data_cache = {}
+        self._column_mapping_cache = None
+
+        # Reset status labels
+        self.word_label.config(text="No file selected", fg=ModernStyle.TEXT_SECONDARY)
+        self.excel_label.config(text="No file selected", fg=ModernStyle.TEXT_SECONDARY)
+        self.additional_label.config(text="Optional - not selected", fg=ModernStyle.TEXT_SECONDARY)
+        self.image_label.config(text="Optional - not selected", fg=ModernStyle.TEXT_SECONDARY)
+
+        # Reset progress bar and status
+        self.update_progress(0)
+        self.status_label.config(text="Ready to process your files", fg=ModernStyle.TEXT_SECONDARY)
+
+        # Disable convert button
+        self.convert_btn.configure(
+            state="disabled",
+            bg=ModernStyle.BUTTON_DISABLED,
+            fg="#64748B",
+            cursor="arrow"
+        )
+        self.convert_btn.unbind("<Enter>")
+        self.convert_btn.unbind("<Leave>")
+
 
 class SettingsTab:
     """Settings tab with modern full-width design"""
+
     def __init__(self, parent_frame):
         self.parent_frame = parent_frame
         self.setup_modern_settings_ui()
-    
+
     def setup_modern_settings_ui(self):
         self.parent_frame.configure(bg=ModernStyle.BACKGROUND)
-        
+
         # Header section
         header_frame = tk.Frame(self.parent_frame, bg=ModernStyle.SECONDARY, height=80)
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
-        
+
         header_content = tk.Frame(header_frame, bg=ModernStyle.SECONDARY)
         header_content.pack(fill=tk.BOTH, expand=True, padx=30, pady=20)
-        
+
         title_font = font.Font(family="Segoe UI", size=22, weight="bold")
         title_label = tk.Label(
             header_content,
@@ -2085,46 +2129,53 @@ class SettingsTab:
             fg="white"
         )
         title_label.pack(anchor=tk.W)
-        
+
         # Content area
         content_area = tk.Frame(self.parent_frame, bg=ModernStyle.BACKGROUND)
         content_area.pack(fill=tk.BOTH, expand=True, padx=30, pady=30)
-        
+
         # Settings grid
         settings_grid = tk.Frame(content_area, bg=ModernStyle.BACKGROUND)
         settings_grid.pack(fill=tk.BOTH, expand=True)
-        
+
         # Performance settings
         perf_section = self.create_settings_section(settings_grid, "🚀 Performance Settings", 0, 0)
-        self.create_setting_item(perf_section, "Processing Threads", "Number of parallel threads", "spinbox", {"from_": 1, "to": 8, "value": "4"})
-        self.create_setting_item(perf_section, "Memory Usage", "Optimize memory consumption", "combobox", {"values": ["Low", "Medium", "High"], "default": "Medium"})
-        
+        self.create_setting_item(perf_section, "Processing Threads", "Number of parallel threads", "spinbox",
+                                 {"from_": 1, "to": 8, "value": "4"})
+        self.create_setting_item(perf_section, "Memory Usage", "Optimize memory consumption", "combobox",
+                                 {"values": ["Low", "Medium", "High"], "default": "Medium"})
+
         # Output settings
         output_section = self.create_settings_section(settings_grid, "📁 Output Settings", 0, 1)
-        self.create_setting_item(output_section, "Output Format", "How to save generated documents", "combobox", {"values": ["Individual + ZIP", "ZIP Only", "Individual Only"], "default": "Individual + ZIP"})
-        #self.create_setting_item(output_section, "File Naming", "Document naming convention", "combobox", {"values": ["Numbered", "Key-based", "Custom"], "default": "Numbered"})
-        
+        self.create_setting_item(output_section, "Output Format", "How to save generated documents", "combobox",
+                                 {"values": ["Individual + ZIP", "ZIP Only", "Individual Only"],
+                                  "default": "Individual + ZIP"})
+        # self.create_setting_item(output_section, "File Naming", "Document naming convention", "combobox", {"values": ["Numbered", "Key-based", "Custom"], "default": "Numbered"})
+
         # Cache settings
         cache_section = self.create_settings_section(settings_grid, "🗄️ Cache Management", 1, 0, columnspan=2)
-        
+
         cache_buttons_frame = tk.Frame(cache_section, bg=ModernStyle.SURFACE)
         cache_buttons_frame.pack(fill=tk.X, padx=20, pady=15)
-        
-        clear_template_btn = self.create_action_button(cache_buttons_frame, "Clear Template Cache", self.clear_template_cache, ModernStyle.WARNING)
+
+        clear_template_btn = self.create_action_button(cache_buttons_frame, "Clear Template Cache",
+                                                       self.clear_template_cache, ModernStyle.WARNING)
         clear_template_btn.pack(side=tk.LEFT, padx=(0, 10))
-        
-        clear_data_btn = self.create_action_button(cache_buttons_frame, "Clear Data Cache", self.clear_data_cache, ModernStyle.WARNING)
+
+        clear_data_btn = self.create_action_button(cache_buttons_frame, "Clear Data Cache", self.clear_data_cache,
+                                                   ModernStyle.WARNING)
         clear_data_btn.pack(side=tk.LEFT, padx=(0, 10))
-        
-        reset_settings_btn = self.create_action_button(cache_buttons_frame, "Reset All Settings", self.reset_settings, ModernStyle.DANGER)
+
+        reset_settings_btn = self.create_action_button(cache_buttons_frame, "Reset All Settings", self.reset_settings,
+                                                       ModernStyle.DANGER)
         reset_settings_btn.pack(side=tk.LEFT)
-    
+
     def create_settings_section(self, parent, title, row, column, columnspan=1):
         """Create a modern settings section"""
         section_frame = tk.Frame(parent, bg=ModernStyle.SURFACE, relief=tk.FLAT)
         section_frame.configure(highlightbackground=ModernStyle.BORDER, highlightthickness=1)
         section_frame.grid(row=row, column=column, columnspan=columnspan, sticky="nsew", padx=10, pady=10)
-        
+
         # Configure grid weights
         if columnspan == 2:
             parent.grid_columnconfigure(0, weight=1)
@@ -2132,12 +2183,12 @@ class SettingsTab:
         else:
             parent.grid_columnconfigure(column, weight=1)
         parent.grid_rowconfigure(row, weight=1)
-        
+
         # Section header
         header_frame = tk.Frame(section_frame, bg=ModernStyle.PRIMARY, height=50)
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
-        
+
         header_font = font.Font(family="Segoe UI", size=14, weight="bold")
         header_label = tk.Label(
             header_frame,
@@ -2147,18 +2198,18 @@ class SettingsTab:
             fg="white"
         )
         header_label.pack(anchor=tk.W, padx=20, pady=15)
-        
+
         return section_frame
-    
+
     def create_setting_item(self, parent, title, description, widget_type, options):
         """Create a modern setting item"""
         item_frame = tk.Frame(parent, bg=ModernStyle.SURFACE)
         item_frame.pack(fill=tk.X, padx=20, pady=15)
-        
+
         # Title and description
         text_frame = tk.Frame(item_frame, bg=ModernStyle.SURFACE)
         text_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        
+
         title_font = font.Font(family="Segoe UI", size=11, weight="bold")
         title_label = tk.Label(
             text_frame,
@@ -2168,7 +2219,7 @@ class SettingsTab:
             fg=ModernStyle.TEXT_PRIMARY
         )
         title_label.pack(anchor=tk.W)
-        
+
         desc_font = font.Font(family="Segoe UI", size=9)
         desc_label = tk.Label(
             text_frame,
@@ -2178,7 +2229,7 @@ class SettingsTab:
             fg=ModernStyle.TEXT_SECONDARY
         )
         desc_label.pack(anchor=tk.W, pady=(2, 0))
-        
+
         # Widget
         if widget_type == "spinbox":
             var = tk.StringVar(value=options.get("value", "1"))
@@ -2198,13 +2249,13 @@ class SettingsTab:
                 state="readonly",
                 width=20
             )
-        
+
         widget.pack(side=tk.RIGHT, padx=(10, 0))
-    
+
     def create_action_button(self, parent, text, command, color):
         """Create an action button"""
         btn_font = font.Font(family="Segoe UI", size=9, weight="bold")
-        
+
         button = tk.Button(
             parent,
             text=text,
@@ -2218,27 +2269,28 @@ class SettingsTab:
             pady=10,
             cursor="hand2"
         )
-        
+
         def on_enter(e):
             darken_map = {
                 ModernStyle.WARNING: "#D97706",
                 ModernStyle.DANGER: "#DC2626"
             }
             button.configure(bg=darken_map.get(color, color))
+
         def on_leave(e):
             button.configure(bg=color)
-        
+
         button.bind("<Enter>", on_enter)
         button.bind("<Leave>", on_leave)
-        
+
         return button
-    
+
     def clear_template_cache(self):
         messagebox.showinfo("Cache Cleared", "✅ Template cache has been cleared successfully!")
-    
+
     def clear_data_cache(self):
         messagebox.showinfo("Cache Cleared", "✅ Data cache has been cleared successfully!")
-    
+
     def reset_settings(self):
         if messagebox.askyesno("Reset Settings", "Are you sure you want to reset all settings to default?"):
             messagebox.showinfo("Settings Reset", "✅ All settings have been reset to default values!")
@@ -2246,21 +2298,22 @@ class SettingsTab:
 
 class HelpTab:
     """Help tab with modern full-width design"""
+
     def __init__(self, parent_frame):
         self.parent_frame = parent_frame
         self.setup_modern_help_ui()
-    
+
     def setup_modern_help_ui(self):
         self.parent_frame.configure(bg=ModernStyle.BACKGROUND)
-        
+
         # Header section
         header_frame = tk.Frame(self.parent_frame, bg=ModernStyle.ACCENT, height=80)
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
-        
+
         header_content = tk.Frame(header_frame, bg=ModernStyle.ACCENT)
         header_content.pack(fill=tk.BOTH, expand=True, padx=30, pady=20)
-        
+
         title_font = font.Font(family="Segoe UI", size=22, weight="bold")
         title_label = tk.Label(
             header_content,
@@ -2270,15 +2323,15 @@ class HelpTab:
             fg="white"
         )
         title_label.pack(anchor=tk.W)
-        
+
         # Content area with full width
         content_area = tk.Frame(self.parent_frame, bg=ModernStyle.SURFACE)
         content_area.pack(fill=tk.BOTH, expand=True, padx=0, pady=0)
-        
+
         # Help content with scrollbar
         text_frame = tk.Frame(content_area, bg=ModernStyle.SURFACE)
         text_frame.pack(fill=tk.BOTH, expand=True, padx=30, pady=30)
-        
+
         help_font = font.Font(family="Segoe UI", size=10)
         self.help_text = tk.Text(
             text_frame,
@@ -2295,13 +2348,13 @@ class HelpTab:
             spacing3=5
         )
         self.help_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        
+
         scrollbar = ttk.Scrollbar(text_frame, orient=tk.VERTICAL, command=self.help_text.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.help_text.configure(yscrollcommand=scrollbar.set)
-        
+
         self.insert_help_content()
-    
+
     def insert_help_content(self):
         """Insert comprehensive help content"""
         # Configure text styling
@@ -2309,42 +2362,57 @@ class HelpTab:
         heading_font = font.Font(family="Segoe UI", size=12, weight="bold")
         body_font = font.Font(family="Segoe UI", size=10)
         code_font = font.Font(family="Consolas", size=9)
-        
+
         self.help_text.tag_configure("title", font=title_font, foreground=ModernStyle.PRIMARY, spacing1=15, spacing3=10)
-        self.help_text.tag_configure("heading", font=heading_font, foreground=ModernStyle.TEXT_PRIMARY, spacing1=12, spacing3=8)
+        self.help_text.tag_configure("heading", font=heading_font, foreground=ModernStyle.TEXT_PRIMARY, spacing1=12,
+                                     spacing3=8)
         self.help_text.tag_configure("body", font=body_font, foreground=ModernStyle.TEXT_PRIMARY, spacing1=5)
-        self.help_text.tag_configure("code", font=code_font, background=ModernStyle.SURFACE_DARK, foreground=ModernStyle.TEXT_PRIMARY)
-        self.help_text.tag_configure("bullet", font=body_font, foreground=ModernStyle.TEXT_SECONDARY, lmargin1=20, lmargin2=40, spacing1=3)
+        self.help_text.tag_configure("code", font=code_font, background=ModernStyle.SURFACE_DARK,
+                                     foreground=ModernStyle.TEXT_PRIMARY)
+        self.help_text.tag_configure("bullet", font=body_font, foreground=ModernStyle.TEXT_SECONDARY, lmargin1=20,
+                                     lmargin2=40, spacing1=3)
         self.help_text.tag_configure("important", font=body_font, foreground=ModernStyle.DANGER, spacing1=5)
-       
-        
+
         # Insert content
         self.help_text.insert(tk.END, "Complete User Guide\n", "title")
-        
+
         self.help_text.insert(tk.END, "📋 OVERVIEW\n", "heading")
-        self.help_text.insert(tk.END, "Auto Converter is a powerful tool that transforms Word templates into personalized documents by automatically replacing placeholders with data from Excel files. Perfect for generating contracts, reports, certificates, letters, and any document that requires personalization at scale.\n\n", "body")
-        
+        self.help_text.insert(tk.END,
+                              "Auto Converter is a powerful tool that transforms Word templates into personalized documents by automatically replacing placeholders with data from Excel files. Perfect for generating contracts, reports, certificates, letters, and any document that requires personalization at scale.\n\n",
+                              "body")
+
         self.help_text.insert(tk.END, "🔧 GETTING STARTED\n", "heading")
-        self.help_text.insert(tk.END, "• Step 1: Create a Word template with placeholders using curly braces, e.g., ", "bullet")
+        self.help_text.insert(tk.END, "• Step 1: Create a Word template with placeholders using curly braces, e.g., ",
+                              "bullet")
         self.help_text.insert(tk.END, "{firstname}", "code")
         self.help_text.insert(tk.END, ", ", "bullet")
         self.help_text.insert(tk.END, "{lastname}", "code")
-        self.help_text.insert(tk.END, "\n• Step 2: Prepare an Excel file with column headers matching your placeholders\n• Step 3: Upload both files using the Document Converter tab\n• Step 4: Click 'Convert Files' and select your output destination\n• Step 5: Wait for processing to complete and find your ZIP file\n\n", "bullet")
-        
+        self.help_text.insert(tk.END,
+                              "\n• Step 2: Prepare an Excel file with column headers matching your placeholders\n• Step 3: Upload both files using the Document Converter tab\n• Step 4: Click 'Convert Files' and select your output destination\n• Step 5: Wait for processing to complete and find your ZIP file\n\n",
+                              "bullet")
+
         self.help_text.insert(tk.END, "📝 PLACEHOLDER GUIDELINES\n", "heading")
         self.help_text.insert(tk.END, "• Use curly braces format: ", "bullet")
         self.help_text.insert(tk.END, "{placeholder_name}", "code")
-        self.help_text.insert(tk.END, "\n• Placeholder names must match Excel column headers exactly\n• Case-insensitive matching is supported\n• Special characters and spaces are allowed in placeholder names\n• Avoid using reserved characters: { } \\ / : * ? \" < > |\n\n", "bullet")
-        
+        self.help_text.insert(tk.END,
+                              "\n• Placeholder names must match Excel column headers exactly\n• Case-insensitive matching is supported\n• Special characters and spaces are allowed in placeholder names\n• Avoid using reserved characters: { } \\ / : * ? \" < > |\n\n",
+                              "bullet")
+
         self.help_text.insert(tk.END, "📊 EXCEL FILE STRUCTURE\n", "heading")
-        self.help_text.insert(tk.END, "• Column headers can be placed in rows 1-4 (application searches all four rows)\n• Data rows must start from row 5 onwards\n• Row 4 should contain a 'KEY' column for linking with additional data files\n• Additional files should have a 'PARENT_KEY' column in row 4\n• Empty cells are replaced with blank text in the final documents\n\n", "bullet")
-        
+        self.help_text.insert(tk.END,
+                              "• Column headers can be placed in rows 1-4 (application searches all four rows)\n• Data rows must start from row 5 onwards\n• Row 4 should contain a 'KEY' column for linking with additional data files\n• Additional files should have a 'PARENT_KEY' column in row 4\n• Empty cells are replaced with blank text in the final documents\n\n",
+                              "bullet")
+
         self.help_text.insert(tk.END, "⚡ ADVANCED FEATURES\n", "heading")
-        self.help_text.insert(tk.END, "• 🔄 Multi-threaded parallel processing for faster conversion\n• 📋 Automatic table population for complex data structures\n• 📦 ZIP file generation for easy distribution and download\n• 💾 Smart caching system for improved performance on large datasets\n• 🎯 Dynamic content insertion based on data patterns\n• 🔗 Cross-file data linking using KEY/PARENT_KEY relationships\n\n", "bullet")
-        
+        self.help_text.insert(tk.END,
+                              "• 🔄 Multi-threaded parallel processing for faster conversion\n• 📋 Automatic table population for complex data structures\n• 📦 ZIP file generation for easy distribution and download\n• 💾 Smart caching system for improved performance on large datasets\n• 🎯 Dynamic content insertion based on data patterns\n• 🔗 Cross-file data linking using KEY/PARENT_KEY relationships\n\n",
+                              "bullet")
+
         self.help_text.insert(tk.END, "⚙️ PERFORMANCE OPTIMIZATION\n", "heading")
-        self.help_text.insert(tk.END, "• Adjust processing threads in Settings based on your system capabilities\n• Use the cache management tools to free up memory\n• For large datasets (1000+ rows), consider processing in smaller batches\n• Close other applications to free up system resources during processing\n• Ensure sufficient disk space for temporary files and output\n\n", "bullet")
-        
+        self.help_text.insert(tk.END,
+                              "• Adjust processing threads in Settings based on your system capabilities\n• Use the cache management tools to free up memory\n• For large datasets (1000+ rows), consider processing in smaller batches\n• Close other applications to free up system resources during processing\n• Ensure sufficient disk space for temporary files and output\n\n",
+                              "bullet")
+
         self.help_text.insert(tk.END, "🛠️ TROUBLESHOOTING\n", "heading")
         self.help_text.insert(tk.END, "• ", "important")
         self.help_text.insert(tk.END, "Placeholder not found: ", "important")
@@ -2357,37 +2425,40 @@ class HelpTab:
         self.help_text.insert(tk.END, "Increase processing threads and ensure SSD storage\n• ", "bullet")
         self.help_text.insert(tk.END, "Template corruption: ", "important")
         self.help_text.insert(tk.END, "Verify Word template opens correctly before processing\n\n", "bullet")
-        
+
         self.help_text.insert(tk.END, "💡 TIPS & BEST PRACTICES\n", "heading")
-        self.help_text.insert(tk.END, "• Test with a small dataset (5-10 rows) before processing large files\n• Use descriptive placeholder names for better organization\n• Keep backup copies of your original template and data files\n• Organize Excel files in separate folders by project or category\n• Regular cache clearing improves memory usage and performance\n• Use consistent naming conventions for placeholders across projects\n• Consider using the Settings tab to optimize performance for your system\n\n", "bullet")
+        self.help_text.insert(tk.END,
+                              "• Test with a small dataset (5-10 rows) before processing large files\n• Use descriptive placeholder names for better organization\n• Keep backup copies of your original template and data files\n• Organize Excel files in separate folders by project or category\n• Regular cache clearing improves memory usage and performance\n• Use consistent naming conventions for placeholders across projects\n• Consider using the Settings tab to optimize performance for your system\n\n",
+                              "bullet")
 
         self.help_text.config(state=tk.DISABLED)
 
 
 class MainTablesConverterTab:
     """Tab for main tables conversion with modern full-width design"""
+
     def __init__(self, parent_frame):
         self.parent_frame = parent_frame
         self.codes_df = None
         self.setup_modern_fullwidth_ui()
-    
+
     def setup_modern_fullwidth_ui(self):
         # Configure parent frame
         self.parent_frame.configure(bg=ModernStyle.BACKGROUND)
-        
+
         # Main container with full width
         main_container = tk.Frame(self.parent_frame, bg=ModernStyle.BACKGROUND)
         main_container.pack(fill=tk.BOTH, expand=True, padx=0, pady=0)
-        
+
         # Header section with gradient-like effect
         header_frame = tk.Frame(main_container, bg=ModernStyle.ACCENT, height=80)
         header_frame.pack(fill=tk.X, pady=(0, 0))
         header_frame.pack_propagate(False)
-        
+
         # Header content
         header_content = tk.Frame(header_frame, bg=ModernStyle.ACCENT)
         header_content.pack(fill=tk.BOTH, expand=True, padx=30, pady=20)
-        
+
         title_font = font.Font(family="Segoe UI", size=22, weight="bold")
         title_label = tk.Label(
             header_content,
@@ -2397,7 +2468,7 @@ class MainTablesConverterTab:
             fg="white"
         )
         title_label.pack(side=tk.LEFT, anchor=tk.W)
-        
+
         subtitle_font = font.Font(family="Segoe UI", size=11)
         subtitle_label = tk.Label(
             header_content,
@@ -2407,34 +2478,34 @@ class MainTablesConverterTab:
             fg="white"
         )
         subtitle_label.pack(side=tk.RIGHT, anchor=tk.E)
-        
+
         # Content area with full width
         content_area = tk.Frame(main_container, bg=ModernStyle.BACKGROUND)
         content_area.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
-        
+
         # Two-column layout for better space utilization
         left_column = tk.Frame(content_area, bg=ModernStyle.BACKGROUND)
         left_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
-        
+
         right_column = tk.Frame(content_area, bg=ModernStyle.BACKGROUND)
         right_column.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
-        
+
         # File Upload Section (Left Column)
         upload_section = self.create_modern_section(left_column, "📁 File Upload", ModernStyle.PRIMARY)
         upload_section.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
-        
+
         # Modern upload cards
-        self.create_modern_upload_card(upload_section, "📋", "Load Codes File", "Excel file with value mappings", 
-                                     lambda: self.load_codesfile(), "codes_label")
-        
+        self.create_modern_upload_card(upload_section, "📋", "Load Codes File", "Excel file with value mappings",
+                                       lambda: self.load_codesfile(), "codes_label")
+
         # Processing Section (Right Column)
         processing_section = self.create_modern_section(right_column, "🚀 Processing", ModernStyle.SECONDARY)
         processing_section.pack(fill=tk.BOTH, expand=True)
-        
+
         # Convert button area
         button_area = tk.Frame(processing_section, bg=ModernStyle.SURFACE)
         button_area.pack(fill=tk.X, padx=20, pady=20)
-        
+
         self.convert_btn = self.create_modern_action_button(
             button_area,
             "🔄 Convert Excel File",
@@ -2442,7 +2513,7 @@ class MainTablesConverterTab:
             state="disabled"
         )
         self.convert_btn.pack(anchor=tk.CENTER, pady=(0, 10))
-        
+
         self.instructions_btn = self.create_modern_button(
             button_area,
             "📘 Instructions & Credits",
@@ -2450,11 +2521,11 @@ class MainTablesConverterTab:
             ModernStyle.ACCENT
         )
         self.instructions_btn.pack(anchor=tk.CENTER)
-        
+
         # Status area
         status_area = tk.Frame(processing_section, bg=ModernStyle.SURFACE_DARK, relief=tk.FLAT)
         status_area.pack(fill=tk.X, padx=20, pady=(15, 20))
-        
+
         status_font = font.Font(family="Segoe UI", size=9)
         self.status_label = tk.Label(
             status_area,
@@ -2470,12 +2541,12 @@ class MainTablesConverterTab:
         """Create a modern section with accent color"""
         section_frame = tk.Frame(parent, bg=ModernStyle.SURFACE, relief=tk.FLAT)
         section_frame.configure(highlightbackground=ModernStyle.BORDER, highlightthickness=1)
-        
+
         # Section header with accent
         header_frame = tk.Frame(section_frame, bg=accent_color, height=40)
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
-        
+
         header_font = font.Font(family="Segoe UI", size=14, weight="bold")
         header_label = tk.Label(
             header_frame,
@@ -2485,22 +2556,22 @@ class MainTablesConverterTab:
             fg="white"
         )
         header_label.pack(anchor=tk.W, padx=20, pady=10)
-        
+
         return section_frame
-    
+
     def create_modern_upload_card(self, parent, icon, title, description, command, label_attr):
         """Create a modern upload card with full-width design"""
         card_frame = tk.Frame(parent, bg=ModernStyle.SURFACE)
         card_frame.pack(fill=tk.X, padx=20, pady=10)
-        
+
         # Card content with hover effect simulation
         content_frame = tk.Frame(card_frame, bg=ModernStyle.SURFACE_DARK, relief=tk.FLAT, bd=1)
         content_frame.pack(fill=tk.X, pady=2)
-        
+
         # Icon and content area
         main_content = tk.Frame(content_frame, bg=ModernStyle.SURFACE_DARK)
         main_content.pack(fill=tk.X, padx=15, pady=12)
-        
+
         # Icon
         icon_font = font.Font(family="Segoe UI", size=20)
         icon_label = tk.Label(
@@ -2512,11 +2583,11 @@ class MainTablesConverterTab:
             width=3
         )
         icon_label.pack(side=tk.LEFT, padx=(0, 15))
-        
+
         # Text content
         text_content = tk.Frame(main_content, bg=ModernStyle.SURFACE_DARK)
         text_content.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        
+
         title_font = font.Font(family="Segoe UI", size=11, weight="bold")
         title_label = tk.Label(
             text_content,
@@ -2526,7 +2597,7 @@ class MainTablesConverterTab:
             fg=ModernStyle.TEXT_PRIMARY
         )
         title_label.pack(anchor=tk.W)
-        
+
         desc_font = font.Font(family="Segoe UI", size=9)
         desc_label = tk.Label(
             text_content,
@@ -2536,7 +2607,7 @@ class MainTablesConverterTab:
             fg=ModernStyle.TEXT_SECONDARY
         )
         desc_label.pack(anchor=tk.W, pady=(2, 0))
-        
+
         # Status label
         status_font = font.Font(family="Segoe UI", size=8)
         status_label = tk.Label(
@@ -2548,7 +2619,7 @@ class MainTablesConverterTab:
         )
         status_label.pack(anchor=tk.W, pady=(4, 0))
         setattr(self, label_attr, status_label)
-        
+
         # Button
         button = self.create_modern_button(
             main_content,
@@ -2561,7 +2632,7 @@ class MainTablesConverterTab:
     def create_modern_button(self, parent, text, command, color):
         """Create a modern button with rounded appearance"""
         btn_font = font.Font(family="Segoe UI", size=9, weight="bold")
-        
+
         button = tk.Button(
             parent,
             text=text,
@@ -2575,22 +2646,23 @@ class MainTablesConverterTab:
             pady=8,
             cursor="hand2"
         )
-        
+
         # Hover effects
         def on_enter(e):
             button.configure(bg=self.darken_color(color))
+
         def on_leave(e):
             button.configure(bg=color)
-        
+
         button.bind("<Enter>", on_enter)
         button.bind("<Leave>", on_leave)
-        
+
         return button
-    
+
     def create_modern_action_button(self, parent, text, command, state="normal"):
         """Create a large modern action button with appealing colors"""
         btn_font = font.Font(family="Segoe UI", size=12, weight="bold")
-        
+
         if state == "disabled":
             bg_color = ModernStyle.BUTTON_DISABLED
             text_color = "#64748B"
@@ -2599,7 +2671,7 @@ class MainTablesConverterTab:
             bg_color = ModernStyle.BUTTON_PRIMARY
             text_color = "white"
             cursor = "hand2"
-        
+
         button = tk.Button(
             parent,
             text=text,
@@ -2614,22 +2686,22 @@ class MainTablesConverterTab:
             cursor=cursor,
             state=state
         )
-        
+
         return button
-    
+
     def setup_modern_progress_bar(self, parent):
         """Setup modern progress bar with custom styling"""
         progress_container = tk.Frame(parent, bg=ModernStyle.SURFACE)
         progress_container.pack(fill=tk.X, pady=(0, 10))
-        
+
         # Custom progress bar background
         progress_bg = tk.Frame(progress_container, bg=ModernStyle.SURFACE_DARK, height=8)
         progress_bg.pack(fill=tk.X, pady=(0, 5))
-        
+
         # Progress fill
         self.progress_fill = tk.Frame(progress_bg, bg=ModernStyle.PRIMARY, height=8)
         self.progress_fill.place(x=0, y=0, width=0, height=8)
-        
+
         # Progress percentage
         self.progress_text = tk.Label(
             progress_container,
@@ -2639,13 +2711,13 @@ class MainTablesConverterTab:
             fg=ModernStyle.TEXT_SECONDARY
         )
         self.progress_text.pack(anchor=tk.E)
-        
+
         # Store the background frame for width calculations
         self.progress_bg_frame = progress_bg
-        
+
         # Initialize progress
         self.progress_value = 0
-    
+
     def update_progress(self, value):
         """Update the custom progress bar"""
         self.progress_value = value
@@ -2656,7 +2728,7 @@ class MainTablesConverterTab:
                 fill_width = int((value / 100) * bg_width)
                 self.progress_fill.place(width=fill_width)
                 self.progress_text.config(text=f"{int(value)}%")
-    
+
     def darken_color(self, color):
         """Darken a hex color for hover effect"""
         color_map = {
@@ -2667,7 +2739,7 @@ class MainTablesConverterTab:
             ModernStyle.BUTTON_PRIMARY: ModernStyle.BUTTON_PRIMARY_HOVER
         }
         return color_map.get(color, color)
-    
+
     def update_file_status(self, label, filename, success=True):
         """Update file status with modern styling"""
         if success:
@@ -2694,12 +2766,12 @@ class MainTablesConverterTab:
                 # Validate required columns
                 required_cols = ['list name', 'name', 'label::English']
                 missing_cols = [col for col in required_cols if col not in self.codes_df.columns]
-                
+
                 if missing_cols:
                     messagebox.showerror("Error", f"Missing required columns: {', '.join(missing_cols)}")
                     self.codes_df = None
                     return
-                
+
                 self.update_file_status(self.codes_label, Path(file_path).name, True)
                 self.check_ready_to_convert()
                 self.status_label.config(text="✅ Codes file loaded successfully", fg=ModernStyle.SUCCESS)
@@ -2707,7 +2779,7 @@ class MainTablesConverterTab:
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to load codes file:\n{e}")
                 self.status_label.config(text="❌ Error loading codes file", fg=ModernStyle.DANGER)
-    
+
     def check_ready_to_convert(self):
         """Check if ready to convert and enable/disable button"""
         if self.codes_df is not None:
@@ -2717,12 +2789,13 @@ class MainTablesConverterTab:
                 fg="white",
                 cursor="hand2"
             )
-            
+
             def on_enter(e):
                 self.convert_btn.configure(bg=ModernStyle.BUTTON_PRIMARY_HOVER)
+
             def on_leave(e):
                 self.convert_btn.configure(bg=ModernStyle.BUTTON_PRIMARY)
-            
+
             self.convert_btn.bind("<Enter>", on_enter)
             self.convert_btn.bind("<Leave>", on_leave)
         else:
@@ -2807,19 +2880,19 @@ class MainTablesConverterTab:
         instr_window.geometry("700x500")
         instr_window.configure(bg=ModernStyle.BACKGROUND)
         instr_window.resizable(False, False)
-        
+
         # Center the window
         instr_window.transient(self.parent_frame)
         instr_window.grab_set()
-        
+
         # Header
         header_frame = tk.Frame(instr_window, bg=ModernStyle.ACCENT, height=60)
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
-        
+
         header_content = tk.Frame(header_frame, bg=ModernStyle.ACCENT)
         header_content.pack(fill=tk.BOTH, expand=True, padx=20, pady=15)
-        
+
         heading_font = font.Font(family="Segoe UI", size=16, weight="bold")
         heading = tk.Label(
             header_content,
@@ -2829,11 +2902,11 @@ class MainTablesConverterTab:
             fg="white"
         )
         heading.pack(anchor=tk.W)
-        
+
         # Content area
         content_frame = tk.Frame(instr_window, bg=ModernStyle.SURFACE)
         content_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
-        
+
         content_font = font.Font(family="Segoe UI", size=10)
         instr_text = """
 1. Click "Load Codes File" to upload the Excel file containing your value mappings.
@@ -2857,7 +2930,7 @@ Example Codes File Structure:
 │ status      │ I        │ Inactive            │
 └─────────────┴──────────┴─────────────────────┘
 """
-        
+
         content = tk.Label(
             content_frame,
             text=instr_text,
@@ -2869,11 +2942,11 @@ Example Codes File Structure:
             anchor="nw"
         )
         content.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        
+
         # Footer
         footer_frame = tk.Frame(instr_window, bg=ModernStyle.SURFACE_DARK)
         footer_frame.pack(fill=tk.X, pady=(0, 0))
-        
+
         footer_font = font.Font(family="Segoe UI", size=9, slant="italic")
         footer = tk.Label(
             footer_frame,
@@ -2884,7 +2957,7 @@ Example Codes File Structure:
             pady=15
         )
         footer.pack()
-        
+
         # Close button
         close_btn = self.create_modern_button(
             footer_frame,
@@ -2897,21 +2970,22 @@ Example Codes File Structure:
 
 class AutoConverter:
     """Main application with modern full-width interface"""
+
     def __init__(self, root):
         self.root = root
-        self.root.title("Auto Converter v1 - Professional Edition")
+        self.root.title("Auto Converter Pro - Professional Edition")
         self.root.geometry("1000x700")
         self.root.configure(bg=ModernStyle.BACKGROUND)
         self.root.resizable(True, True)
         self.root.minsize(900, 600)
-        
+
         self.setup_modern_ui()
-    
+
     def setup_modern_ui(self):
         # Configure modern styling
         style = ttk.Style()
         style.theme_use('clam')
-        
+
         # Custom notebook styling for full-width tabs with consistent sizing
         style.configure(
             "Modern.TNotebook",
@@ -2919,7 +2993,7 @@ class AutoConverter:
             borderwidth=0,
             tabmargins=[0, 0, 0, 0]
         )
-        
+
         # Base tab configuration with consistent padding
         style.configure(
             "Modern.TNotebook.Tab",
@@ -2930,24 +3004,24 @@ class AutoConverter:
             focuscolor='none',
             font=('Segoe UI', 10, 'normal')  # Consistent font
         )
-        
+
         # Map different states with consistent sizing
         style.map(
             "Modern.TNotebook.Tab",
             background=[
-                ("selected", ModernStyle.PRIMARY), 
+                ("selected", ModernStyle.PRIMARY),
                 ("active", ModernStyle.SURFACE_DARK),
                 ("!active", ModernStyle.SURFACE)
             ],
             foreground=[
-                ("selected", "white"), 
+                ("selected", "white"),
                 ("active", ModernStyle.TEXT_PRIMARY),
                 ("!active", ModernStyle.TEXT_PRIMARY)
             ],
             padding=[
                 ("selected", [30, 12]),  # Same padding for selected
-                ("active", [30, 12]),    # Same padding for active
-                ("!active", [30, 12])    # Same padding for inactive
+                ("active", [30, 12]),  # Same padding for active
+                ("!active", [30, 12])  # Same padding for inactive
             ],
             font=[
                 ("selected", ('Segoe UI', 10, 'bold')),  # Bold for selected
@@ -2955,38 +3029,39 @@ class AutoConverter:
                 ("!active", ('Segoe UI', 10, 'normal'))  # Normal for inactive
             ]
         )
-        
+
         # Main container
         main_container = tk.Frame(self.root, bg=ModernStyle.BACKGROUND)
         main_container.pack(fill=tk.BOTH, expand=True)
-        
+
         # Create modern notebook
         self.notebook = ttk.Notebook(main_container, style="Modern.TNotebook")
         self.notebook.pack(fill=tk.BOTH, expand=True)
-        
+
         # Create tab frames
         converter_frame = tk.Frame(self.notebook, bg=ModernStyle.BACKGROUND)
         main_tables_frame = tk.Frame(self.notebook, bg=ModernStyle.BACKGROUND)
         settings_frame = tk.Frame(self.notebook, bg=ModernStyle.BACKGROUND)
         help_frame = tk.Frame(self.notebook, bg=ModernStyle.BACKGROUND)
-        
+
         # Add tabs with icons
         self.notebook.add(main_tables_frame, text="🛠️ Main Tables Converter")
         self.notebook.add(converter_frame, text="🔄 HouseBiz Converter")
         self.notebook.add(settings_frame, text="⚙️ Settings")
         self.notebook.add(help_frame, text="❓ Help")
-        
+
         # Initialize tab classes
         self.main_tables_tab = MainTablesConverterTab(main_tables_frame)
         self.converter_tab = DocumentConverterTab(converter_frame)
         self.settings_tab = SettingsTab(settings_frame)
-        self.help_tab = HelpTab(help_frame) 
+        self.help_tab = HelpTab(help_frame)
 
 
 def main():
     root = tk.Tk()
     app = AutoConverter(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
